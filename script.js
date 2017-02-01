@@ -1,10 +1,12 @@
 var origin;
 var destination;
-var arrivalTime;
+var arrival;
+var arriveBy;
+
 function getDirections() {
   origin = document.getElementById("origin").value;
   destination = document.getElementById("destination").value;
-  arrivalTime = document.getElementById("arrivalTime").value;
+  arrival = document.getElementById("arrivalTime").value;
 
   var xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
@@ -22,15 +24,16 @@ function getDirections() {
     xhttp.onloadend = function() {
       document.getElementById("loader").style.display = "none";
     }
-    var arriveBy = new Date();
-    arriveBy.setHours(arrivalTime.split(":")[0],arrivalTime.split(":")[1]);
+    arriveBy = new Date();
+    arriveBy.setHours(arrival.split(":")[0],arrival.split(":")[1]);
     var url = "https://maps.googleapis.com/maps/api/directions/xml?mode=transit&origin=" + origin +
-        "&destination=" + destination + "&arrival_time="+ Math.round(arriveBy.getTime()/1000) + "&key=AIzaSyAQLrqyOK42M1juBuy9SY4DUVPdqnlVeEA";
+        "&destination=" + destination + "&arrival_time="+ Math.round(arriveBy.getTime()/1000) + "&key=AIzaSyCB-qlxUnHSrGp0aWoN-oojLpRox6lcqY8";
     xhttp.open("GET", url, true);
     xhttp.send();
 }
 
 function load(response) {
+
   var xml = response.responseXML;
     if (xml == null) {
         alert('Invalid response from server.');
@@ -45,6 +48,15 @@ function load(response) {
     }*/
     var output = "";
 
+    var departureLocation = xml.getElementsByTagName("start_address")[0];
+    if (departureLocation) departureLocation = departureLocation.innerHTML;
+    var departureTime = xml.getElementsByTagName("departure_time")[xml.getElementsByTagName("departure_time").length-1];
+    if (departureTime) departureTime = departureTime.getElementsByTagName("text")[0];
+    if (departureTime) departureTime = departureTime.innerHTML;
+
+    output += '<i class="material-icons">location_on</i>';
+    output += "Leave " + departureLocation + " at " + departureTime + "<br />";
+
     for (var i = 0; i < directions.length; i++) {
       var direction = directions[i];
       var travelMode = direction.getElementsByTagName("travel_mode")[0];
@@ -56,11 +68,25 @@ function load(response) {
       else {
         output += '<i class="material-icons">directions_transit</i>';
       }
+      if (travelMode == "TRANSIT") {
+        output += "Wait at ";
+        var stop = direction.getElementsByTagName("departure_stop")[0];
+        if (stop) stop = stop.getElementsByTagName("name")[0];
+        if (stop) stop = stop.innerHTML;
+        output += stop + ". ";
+      }
       var instruction = direction.getElementsByTagName("html_instructions")[0];
       if (instruction) instruction = instruction.childNodes[0];
       if (instruction) instruction = instruction.nodeValue;
       output += instruction;
-      output += " (";
+      if (travelMode == "TRANSIT") {
+        output += ". Get off at ";
+        var stop = direction.getElementsByTagName("arrival_stop")[0];
+        if (stop) stop = stop.getElementsByTagName("name")[0];
+        if (stop) stop = stop.innerHTML;
+        output += stop;
+      }
+      output += ". (";
       var duration = direction.getElementsByTagName("duration")[0];
       if (duration) duration = duration.getElementsByTagName("text")[0];
       if (duration) duration = duration.childNodes[0];
@@ -74,6 +100,19 @@ function load(response) {
       output += distance;
       output += ")<br />";
     }
+
+    var arrivalLocation = xml.getElementsByTagName("end_address")[0];
+    if (arrivalLocation) arrivalLocation = arrivalLocation.innerHTML;
+    var arrivalTime = xml.getElementsByTagName("arrival_time")[xml.getElementsByTagName("arrival_time").length-1];
+    if (arrivalTime) arrivalTime = arrivalTime.getElementsByTagName("text")[0];
+    if (arrivalTime) arrivalTime = arrivalTime.innerHTML;
+    output += '<i class="material-icons">pin_drop</i>';
+    output += "Arrive at " + arrivalLocation + " at " + arrivalTime + "<br />";
+
+    var gCopyrightText = xml.getElementsByTagName("route")[0];
+    if (gCopyrightText) gCopyrightText = gCopyrightText.getElementsByTagName("copyrights")[0];
+    if (gCopyrightText) gCopyrightText = gCopyrightText.innerHTML;
+    output += gCopyrightText;
 
     document.getElementById("directions").innerHTML = output;
 }
