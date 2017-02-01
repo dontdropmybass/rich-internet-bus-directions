@@ -4,6 +4,7 @@ var arrival;
 var arriveBy;
 
 function getDirections() {
+  debugger;
   if (!document.getElementById("origin").checkValidity() ||
       !document.getElementById("destination").checkValidity() ||
       !document.getElementById("arrivalTime").checkValidity()) {
@@ -32,8 +33,8 @@ function getDirections() {
     }
     arriveBy = new Date();
     arriveBy.setHours(arrival.split(":")[0],arrival.split(":")[1]);
-    var url = "https://maps.googleapis.com/maps/api/directions/xml?mode=transit&origin=" + origin +
-        "&destination=" + destination + "&arrival_time="+ Math.round(arriveBy.getTime()/1000) + "&key=AIzaSyCB-qlxUnHSrGp0aWoN-oojLpRox6lcqY8";
+    var url = "https://maps.googleapis.com/maps/api/directions/xml?mode=transit&origin=" + origin.split(' ').join('+') +
+        "&destination=" + destination.split(' ').join('+') + "&arrival_time="+ Math.round(arriveBy.getTime()/1000) + "&key=AIzaSyCB-qlxUnHSrGp0aWoN-oojLpRox6lcqY8";
     xhttp.open("GET", url, true);
     xhttp.send();
 }
@@ -79,7 +80,7 @@ function load(response) {
         var stop = direction.getElementsByTagName("departure_stop")[0];
         if (stop) stop = stop.getElementsByTagName("name")[0];
         if (stop) stop = stop.innerHTML;
-        output += stop + ". ";
+        output += stop;
       }
       var instruction = direction.getElementsByTagName("html_instructions")[0];
       if (instruction) instruction = instruction.childNodes[0];
@@ -92,7 +93,7 @@ function load(response) {
         if (stop) stop = stop.innerHTML;
         output += stop;
       }
-      output += ". (";
+      output += " (";
       var duration = direction.getElementsByTagName("duration")[0];
       if (duration) duration = duration.getElementsByTagName("text")[0];
       if (duration) duration = duration.childNodes[0];
