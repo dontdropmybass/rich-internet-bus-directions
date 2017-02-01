@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rich Bus Directions</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css" />
+  <link rel="stylesheet" href="http://fonts.googleapis.com/icon?family=Material+Icons" />
+</head>
+<body>
+<div class="w3-content w3-padding" style="max-width:1564px">
+
+  <div class="w3-container w3-padding-32" id="projects">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Bus Routes</h3>
+  </div>
+
+  <div class="w3-row-padding">
+    <div class="w3-col l6 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <div class="w3-display-center w3-padding">
+          <label class="w3-section" for="origin">Origin:
+            <input id="origin" class="w3-input" type="text" placeholder="Origin" required name="origin" />
+          </label>
+          <label class="w3-section" for="destination">Destination:
+            <input id="destination" class="w3-input" type="text" placeholder="Destination" required name="destination" />
+          </label>
+          <label class="w3-section" for="arrival">Arrive by:
+            <input id="arrivalTime" class="w3-input" type="time" required name="arrivalTime" />
+          </label>
+          <button class="w3-btn w3-blue w3-section w3-right" onclick="getDirections()">
+            <i class="material-icons">directions_transit</i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="w3-col l6 m6 w3-margin-bottom">
+      <div id="dir-container" style="display:none;" class="w3-display-container w3-display-center w3-blue w3-padding">
+        <img id="loader" style="max-width:100%; max-height:100%; display:none;" src="https://s-media-cache-ak0.pinimg.com/originals/ec/5e/06/ec5e063d118828fc976cea2fc258a0b3.gif" />
+        <div id="directions">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<footer>
+  <script type="text/javascript" src="script.js"></script>
+</footer>
+</html>
