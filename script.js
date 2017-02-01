@@ -4,7 +4,6 @@ var arrival;
 var arriveBy;
 
 function getDirections() {
-  debugger;
   if (!document.getElementById("origin").checkValidity() ||
       !document.getElementById("destination").checkValidity() ||
       !document.getElementById("arrivalTime").checkValidity()) {
@@ -74,6 +73,10 @@ function load(response) {
       }
       else {
         output += '<i class="material-icons">directions_transit</i>';
+        var linenum = direction.getElementsByTagName("transit_details")[0];
+        if (linenum) linenum = linenum.getElementsByTagName("short_name")[0];
+        if (linenum) linenum = linenum.innerHTML;
+        output += '<b class="w3-red">' + linenum + '</b> ';
       }
       if (travelMode == "TRANSIT") {
         output += "Wait at ";
