@@ -4,6 +4,12 @@ var arrival;
 var arriveBy;
 
 function getDirections() {
+  if (!document.getElementById("origin").checkValidity() ||
+      !document.getElementById("destination").checkValidity() ||
+      !document.getElementById("arrivalTime").checkValidity()) {
+        alert("Invalid input");
+        return;
+  }
   origin = document.getElementById("origin").value;
   destination = document.getElementById("destination").value;
   arrival = document.getElementById("arrivalTime").value;
